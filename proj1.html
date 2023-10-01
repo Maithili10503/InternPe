@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guess My Number Game</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    background-color: #34495E;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  #game-container {
+    background-color: #ECF0F1;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 500px;
+    border: 2px solid #ddd;
+    transition: background-color 0.3s;
+  }
+
+  #game-container:hover {
+    background-color: #D5DBDB;
+  }
+
+  #guessButton {
+    background-color: #3498DB;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+
+  #guessButton:hover {
+    background-color: #2980B9;
+    transform: scale(1.05);
+  }
+
+  #guessInput {
+    padding: 8px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-right: 10px;
+    width: 180px;
+    transition: border-color 0.3s, transform 0.2s;
+  }
+
+  #guessInput:hover {
+    border-color: #3498DB;
+    transform: scale(1.03);
+  }
+
+  @keyframes fireworks {
+    0%, 100% {
+      transform: translateY(0) rotate(0);
+      opacity: 0;
+    }
+    50% {
+      transform: translateY(-100px) rotate(180deg);
+      opacity: 1;
+    }
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  #fireworks {
+    width: 10px;
+    height: 40px;
+    position: absolute;
+    background-color: #FFD700;
+    animation: fireworks 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    transform-origin: bottom center;
+  }
+
+  #fireworks.outside {
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+</style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Guess My Number Game</h1>
+    <p>Try to guess the number between 1 and 100!</p>
+    <input type="number" id="guessInput" placeholder="Enter your guess">
+    <button id="guessButton">Submit Guess</button>
+    <p id="message"></p>
+    <div id="fireworks" class="hidden"></div>
+  </div>
+  <script>
+    const targetNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+
+    const messageElement = document.getElementById("message");
+    const guessInput = document.getElementById("guessInput");
+    const guessButton = document.getElementById("guessButton");
+    const fireworks = document.getElementById("fireworks");
+
+    function handleGuess() {
+      const userGuess = parseInt(guessInput.value);
+
+      if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+        messageElement.textContent = "Please enter a valid number between 1 and 100.";
+      } else {
+        attempts++;
+
+        if (userGuess < targetNumber) {
+          messageElement.textContent = `Try a higher number! Attempt: ${attempts}`;
+        } else if (userGuess > targetNumber) {
+          messageElement.textContent = `Try a lower number! Attempt: ${attempts}`;
+        } else {
+          messageElement.textContent = `Congratulations! You guessed the number ${targetNumber} in ${attempts} attempts.`;
+          guessInput.disabled = true;
+          guessButton.disabled = true;
+          guessButton.style.backgroundColor = "#4CAF50";
+          guessButton.style.cursor = "default";
+          fireworks.classList.remove("hidden");
+          fireworks.classList.add("outside");
+        }
+      }
+
+      guessInput.value = "";
+      guessInput.focus();
+    }
+
+    guessButton.addEventListener("click", handleGuess);
+
+    guessInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        handleGuess();
+      }
+    });
+  </script>
+</body>
+</html>
